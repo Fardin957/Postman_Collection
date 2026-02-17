@@ -1,0 +1,1012 @@
+{
+  "info": {
+    "_postman_id": "c7eddb38-151f-4fcb-8d97-6a8b7a7f06cb",
+    "name": "Exam",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50510198",
+    "_collection_link": "https://go.postman.co/collection/50510198-c7eddb38-151f-4fcb-8d97-6a8b7a7f06cb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "User Login",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json()\r",
+                  "pm.environment.set(\"admin_token\", jsonData.token);\r",
+                  "\r",
+                  "pm.test(\"Status code validation\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"admin_token validation\", function () {\r",
+                  "    pm.expect(jsonData.token).to.not.be.null;\r",
+                  "});\r",
+                  "pm.test(\"Role validation\", function () {\r",
+                  "    pm.expect(jsonData.role).to.equal(\"Admin\");\r",
+                  "});\r",
+                  "pm.test(\"Message validation\", function () {\r",
+                  "    pm.expect(jsonData.message).to.equal(\"Login successful\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@dmoney.com\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/user/login",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "List and search",
+      "item": [
+        {
+          "name": "User List",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{Base_URL}}/user/list",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "user",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "search-user-by-email",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_URL}}/user/search?email=Leon_Rau84@hotmail.com",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "user",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": null,
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "Leon_Rau84@hotmail.com"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "search-user-by-id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{Base_URL}}/user/search/id/61",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "user",
+                "search",
+                "id",
+                "61"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "balance-check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code validation\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.collectionVariables.set(\"balance\", pm.response.json().balance);\r",
+                  "pm.test(\"Balance validation\", function () { \r",
+                  "    pm.expect(pm.response.json().balance).to.eql(\"1574.00\");\r",
+                  "    });\r",
+                  "    pm.test(\"Account validation\", function () { \r",
+                  "        pm.expect(pm.response.json().account).to.eql(\"01611111111\");\r",
+                  "        });\r",
+                  "        pm.test(\"Message validation\", function () { \r",
+                  "            pm.expect(pm.response.json().message).to.eql(\"Balance retrieved successfully\");\r",
+                  "            });\r",
+                  "            "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/balance/01512345678",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "balance",
+                "01512345678"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Create",
+      "item": [
+        {
+          "name": "user-create",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var name = pm.variables.replaceIn(\"{{$randomFullName}}\")\r",
+                  "console.log(name)\r",
+                  "pm.environment.set(\"Full_Name\",name)\r",
+                  "var password = pm.variables.replaceIn(\"{{$randomPassword}}\")    \r",
+                  "console.log(password)\r",
+                  "pm.environment.set(\"Password\", password)\r",
+                  "var email = pm.variables.replaceIn(\"{{$randomEmail}}\")\r",
+                  "console.log(email)\r",
+                  "pm.environment.set(\"Email\", email)\r",
+                  "const phone_number = \"01\" + Math.floor(100000000 + Math.random() * 900000000);\r",
+                  "console.log(phone_number)\r",
+                  "pm.environment.set(\"Phone_Number\",phone_number)\r",
+                  "const nid = Math.floor(1000000000 + Math.random() * 9000000000).toString();\r",
+                  "console.log(nid)\r",
+                  "pm.environment.set(\"Nid\",nid)\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var response = pm.response.json()\r",
+                  "pm.test(\"Status code validation\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "console.log(response)\r",
+                  "\r",
+                  "pm.environment.set(\"id\",response.user.id)\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  "var status_code = pm.response.code;\r",
+                  "console.log(status_code);\r",
+                  "\r",
+                  "switch (status_code) {\r",
+                  "    case 201:\r",
+                  "        var jsondata = pm.response.json();\r",
+                  "        pm.test(\"Status code is 201\", function () {\r",
+                  "            pm.response.to.have.status(201);\r",
+                  "        });\r",
+                  "        pm.test(\"User created\", function () {\r",
+                  "            pm.expect(jsondata.message).to.eql(\"User created successfully\");\r",
+                  "        });\r",
+                  "       \r",
+                  "        pm.test(\"Full Name verify\", function () {\r",
+                  "            pm.expect(jsondata.user.name).to.eql(pm.environment.get(\"Full_Name\"));\r",
+                  "        });\r",
+                  "        pm.test(\"Email verify\", function () {\r",
+                  "            pm.expect(jsondata.user.email).to.eql(pm.environment.get(\"Email\"));\r",
+                  "        });\r",
+                  "        pm.test(\"Phone Number verify\", function () {\r",
+                  "            pm.expect(jsondata.user.phone_number).to.eql(pm.environment.get(\"Phone_Number\"));\r",
+                  "        });\r",
+                  "        pm.test(\"Nid verify\", function () {\r",
+                  "            pm.expect(jsondata.user.nid).to.eql(pm.environment.get(\"Nid\"));\r",
+                  "        });\r",
+                  "        pm.test(\"User role\", function () {\r",
+                  "            pm.expect(jsondata.user.role).to.eql(\"Customer\");\r",
+                  "        });\r",
+                  "        break;\r",
+                  "    case 400:\r",
+                  "        pm.test(\"Bad Request\", function () {\r",
+                  "            pm.response.to.have.status(400);\r",
+                  "        });\r",
+                  "        break;\r",
+                  "    case 401:\r",
+                  "        pm.test(\"Unauthorized\", function () {\r",
+                  "            pm.response.to.have.status(401);\r",
+                  "        });\r",
+                  "        break;\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\":\"{{Full_Name}}\",\r\n  \"email\":\"{{Email}}\",\r\n  \"password\":\"{{Password}}\",\r\n  \"phone_number\":\"{{Phone_Number}}\",\r\n  \"nid\":\"{{Nid}}\",\r\n  \"role\":\"Customer\"\r\n  \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/user/create",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "user",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transaction Endpoint",
+      "item": [
+        {
+          "name": "transaction-details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Message is Transaction details\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Transaction details\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Transaction object exists\", function () {\r",
+                  "    pm.expect(jsonData.transaction).to.be.an(\"object\");\r",
+                  "});\r",
+                  "\r",
+                  "// ---------- Transaction field validations ----------\r",
+                  "\r",
+                  "pm.test(\"Transaction ID is number\", function () {\r",
+                  "    pm.expect(jsonData.transaction.id).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction txn_id is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.trnx_id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction type is deposit\", function () {\r",
+                  "    pm.expect(jsonData.transaction.type).to.eql(\"deposit\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"From account is SYSTEM\", function () {\r",
+                  "    pm.expect(jsonData.transaction.from_account).to.eql(\"SYSTEM\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"To account is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.to_account).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "// Amount, fee, commission are strings in this API\r",
+                  "pm.test(\"Amount is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.amount).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Fee is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.fee).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Commission is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.commission).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Balance before is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.balance_before).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Balance after is string\", function () {\r",
+                  "    pm.expect(jsonData.transaction.balance_after).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status is completed\", function () {\r",
+                  "    pm.expect(jsonData.transaction.status).to.eql(\"completed\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Created at exists\", function () {\r",
+                  "    pm.expect(jsonData.transaction.created_at).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Updated at exists\", function () {\r",
+                  "    pm.expect(jsonData.transaction.updated_at).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Transaction not found message\", function () {\r",
+                  "    pm.expect(jsonData.message).to.include(\"not\");\r",
+                  "});\r",
+                  "pm.test(\"Response time < 2s\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/TXNbmYC0pWgNw1a",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "TXNbmYC0pWgNw1a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "transaction-history",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n"
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/history/01599999999?page=1&limit=05",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "history",
+                "01599999999"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "05"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transaction Operations",
+      "item": [
+        {
+          "name": "deposit-system-to-agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const statusCode = pm.response.code;\r",
+                  "const jsondata = pm.response.json();\r",
+                  "\r",
+                  "switch (statusCode) {\r",
+                  "\r",
+                  "    case 201:\r",
+                  "        pm.test(\"Status code is 201\", function () {\r",
+                  "            pm.response.to.have.status(201);\r",
+                  "        });\r",
+                  "\r",
+                  "        pm.test(\"Message is Deposit successful\", function () {\r",
+                  "            pm.expect(jsondata.message).to.eql(\"Deposit successful\");\r",
+                  "        });\r",
+                  "\r",
+                  "     pm.test(\"Commission is decimal\", function () {\r",
+                  "    pm.expect(jsondata.commission % 1).to.not.eql(0);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Current balance is number\", function () {\r",
+                  "    pm.expect(jsondata.currentBalance).to.be.a(\"number\");\r",
+                  "});\r",
+                  "\r",
+                  "        break;\r",
+                  "\r",
+                  "    case 404:\r",
+                  "        pm.test(\"Not Found\", function () {\r",
+                  "            pm.response.to.have.status(404);\r",
+                  "        });\r",
+                  "        break;\r",
+                  "\r",
+                  "    case 401:\r",
+                  "        pm.test(\"Unauthorized\", function () {\r",
+                  "            pm.response.to.have.status(401);\r",
+                  "        });\r",
+                  "        break;\r",
+                  "\r",
+                  "    default:\r",
+                  "        pm.test(\"Unexpected status code\", function () {\r",
+                  "            pm.expect.fail(\"Status code: \" + statusCode);\r",
+                  "        });\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"from_account\": \"SYSTEM\",\r\n  \"to_account\": \"01599999999\",\r\n  \"amount\": 2000\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/deposit",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "withdraw-customer-to-agent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"from_account\": \"01622222222\",\r\n  \"to_account\": \"01512345678\",\r\n  \"amount\": 500\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/withdraw",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "withdraw"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "send-money-customer-to-customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"from_account\": \"01611111111\",\r\n  \"to_account\": \"01622222222\",\r\n  \"amount\": 100\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/sendmoney",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "sendmoney"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "payment-customer-to-merchant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"from_account\": \"01611111111\",\r\n  \"to_account\": \"01812345678\",\r\n  \"amount\": 250\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/transaction/payment",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "transaction",
+                "payment"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Commission",
+      "item": [
+        {
+          "name": "commission-listing",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY-SYSTEM",
+                "value": "{{AUTH_SECRET_KEY_SYSTEM}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{Base_URL}}/commission/list?page=1&limit=20",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "commission",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "commission-create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY-SYSTEM",
+                "value": "{{AUTH_SECRET_KEY_SYSTEM}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"from_role\": \"Customer\",\r\n  \"to_role\": \"Merchant\",\r\n  \"type\": \"FIXED\",\r\n  \"value\": 5\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/commission/create",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "commission",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Virtual Money",
+      "item": [
+        {
+          "name": "admin-create-virtual-money",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY-SYSTEM",
+                "value": "{{AUTH_SECRET_KEY_SYSTEM}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 1000\r\n\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Base_URL}}/system/virtual-money/create",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "system",
+                "virtual-money",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "system-virtual-balance",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY",
+                "value": "{{AUTH_SECRET_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "AUTH-SECRET-KEY-SYSTEM",
+                "value": "{{AUTH_SECRET_KEY_SYSTEM}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 1000\r\n\r\n}\r\n"
+            },
+            "url": {
+              "raw": "{{Base_URL}}/system/balance",
+              "host": [
+                "{{Base_URL}}"
+              ],
+              "path": [
+                "system",
+                "balance"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "balance",
+      "value": ""
+    }
+  ]
+}
