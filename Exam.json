@@ -165,7 +165,7 @@
               }
             ],
             "url": {
-              "raw": "{{Base_URL}}/user/search/id/61",
+              "raw": "{{Base_URL}}/user/search/id/197",
               "host": [
                 "{{Base_URL}}"
               ],
@@ -173,7 +173,7 @@
                 "user",
                 "search",
                 "id",
-                "61"
+                "197"
               ]
             }
           },
@@ -246,14 +246,14 @@
               }
             },
             "url": {
-              "raw": "{{Base_URL}}/transaction/balance/01512345678",
+              "raw": "{{Base_URL}}/transaction/balance/01611111111",
               "host": [
                 "{{Base_URL}}"
               ],
               "path": [
                 "transaction",
                 "balance",
-                "01512345678"
+                "01611111111"
               ]
             }
           },
@@ -543,6 +543,54 @@
         },
         {
           "name": "transaction-history",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "pm.test(\"Message is 'Transaction history'\", function () {\r",
+                  "    pm.expect(jsonData.message).to.eql(\"Transaction history\");\r",
+                  "});\r",
+                  "pm.test(\"Count is 127\", function () {\r",
+                  "    pm.expect(jsonData.count).to.eql(127);\r",
+                  "});\r",
+                  "pm.test(\"First transaction type is 'customer_deposit'\", function () {\r",
+                  "    pm.expect(jsonData.transactions[0].type).to.eql(\"customer_deposit\");\r",
+                  "});\r",
+                  "pm.test(\"Second transaction type is 'deposit'\", function () {  \r",
+                  "    pm.expect(jsonData.transactions[1].type).to.eql(\"deposit\");\r",
+                  "});\r",
+                  "pm.test(\"First transaction amount is '50.00'\", function () {\r",
+                  "    pm.expect(jsonData.transactions[0].amount).to.eql(\"50.00\");\r",
+                  "});\r",
+                  "pm.test(\"Second transaction fee is '0.00'\", function () {\r",
+                  "    pm.expect(jsonData.transactions[1].fee).to.eql(\"0.00\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -565,7 +613,7 @@
               "raw": "\r\n"
             },
             "url": {
-              "raw": "{{Base_URL}}/transaction/history/01599999999?page=1&limit=05",
+              "raw": "{{Base_URL}}/transaction/history/01599999999?page=1&limit=06",
               "host": [
                 "{{Base_URL}}"
               ],
@@ -581,7 +629,7 @@
                 },
                 {
                   "key": "limit",
-                  "value": "05"
+                  "value": "06"
                 }
               ]
             }
@@ -642,6 +690,17 @@
                   "            pm.expect.fail(\"Status code: \" + statusCode);\r",
                   "        });\r",
                   "}\r",
+                  "\r",
+                  "//negative assertion for current balance    \r",
+                  "\r",
+                  "pm.test(\"The transaction id is empty \",function(){\r",
+                  "    pm.expect(response.trnxId).to.be.empty;\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The commission is empty \", function () {\r",
+                  "    pm.expect(\"commission\").to.be.empty;\r",
+                  "});\r",
                   ""
                 ],
                 "type": "text/javascript",
@@ -699,6 +758,62 @@
         },
         {
           "name": "withdraw-customer-to-agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseBody = pm.response.json();\r",
+                  "pm.test(\"Withdraw successful\", function () {\r",
+                  "    pm.expect(responseBody.message).to.eql(\"Withdraw successful\");\r",
+                  "});\r",
+                  "pm.test(\"Transaction ID is present\", function () {\r",
+                  "    pm.expect(responseBody.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "pm.test(\"Fee is correctly calculated\", function () {\r",
+                  "    pm.expect(responseBody.fee).to.eql(5);\r",
+                  "});\r",
+                  "pm.test(\"Current balance is updated correctly\", function () {\r",
+                  "    pm.expect(responseBody.currentBalance).to.be.a(\"number\");\r",
+                  "});\r",
+                  "pm.test(\"Transaction ID is a string\", function () {\r",
+                  "    pm.expect(responseBody.trnxId).to.be.a(\"string\");\r",
+                  "});\r",
+                  "pm.test(\"Fee is a number\", function () {\r",
+                  "    pm.expect(responseBody.fee).to.be.a(\"number\");\r",
+                  "});\r",
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "//negative assertion for current balance    \r",
+                  "\r",
+                  "pm.test(\"The transaction id is empty\",function(){\r",
+                  "    pm.expect(response.trnxId).to.be.empty;\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The fee is empty \", function () {\r",
+                  "    pm.expect(\"fee\").to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -715,7 +830,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "\r\n{\r\n  \"from_account\": \"01622222222\",\r\n  \"to_account\": \"01512345678\",\r\n  \"amount\": 500\r\n}\r\n\r\n",
+              "raw": "\r\n{\r\n  \"from_account\": \"01611111111\",\r\n  \"to_account\": \"01512345678\",\r\n  \"amount\": 500\r\n}\r\n\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -737,6 +852,59 @@
         },
         {
           "name": "send-money-customer-to-customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Check if the message is correct\", function () {\r",
+                  "    pm.expect(response.message).to.eql(\"Send money successful\");\r",
+                  "});\r",
+                  "pm.test(\"Check if the transaction ID is present\", function () {\r",
+                  "    pm.expect(response.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "pm.test(\"Check if the fee is correct\", function () {\r",
+                  "    pm.expect(response.fee).to.eql(\"1.50\");\r",
+                  "});\r",
+                  "pm.test(\"CurrentBalance is a number and greater than 0\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.expect(response.currentBalance).to.be.a('number');\r",
+                  "    pm.expect(response.currentBalance).to.be.greaterThan(0);\r",
+                  "\r",
+                  "});\r",
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "//negative assertion for current balance    \r",
+                  "\r",
+                  "pm.test(\"The transaction id is empty \",function(){\r",
+                  "    pm.expect(response.trnxId).to.be.empty;\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The fee is empty\", function () {\r",
+                  "    pm.expect(\"fee\").to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -775,6 +943,61 @@
         },
         {
           "name": "payment-customer-to-merchant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Check if the message is correct\", function () {\r",
+                  "    pm.expect(response.message).to.eql(\"Payment successful\");\r",
+                  "});\r",
+                  "pm.test(\"Check if the transaction ID is present\", function () {\r",
+                  "    pm.expect(response.trnxId).to.not.be.null;\r",
+                  "});\r",
+                  "pm.test(\"Check if the commission is 0.00\", function () {\r",
+                  "    pm.expect(response.commission).to.eql(\"0.00\");\r",
+                  "    pm.expect(response.commission).to.be.a('string');\r",
+                  "    });\r",
+                  "\r",
+                  "pm.test(\"CurrentBalance is a number and greater than 0\", function () {\r",
+                  "\r",
+                  "\r",
+                  "    pm.expect(response.currentBalance).to.be.a('number');\r",
+                  "    pm.expect(response.currentBalance).to.be.greaterThan(0);\r",
+                  "\r",
+                  "});\r",
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "//negative assertion for current balance    \r",
+                  "\r",
+                  "pm.test(\"The transaction id is empty \",function(){\r",
+                  "    pm.expect(response.trnxId).to.be.empty;\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The commission is empty\", function () {\r",
+                  "    pm.expect(\"commission\").to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -869,6 +1092,44 @@
         },
         {
           "name": "commission-create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Commission created successfully\", function () {\r",
+                  "    pm.expect(response.message).to.eql(\"Commission created successfully\");\r",
+                  "});\r",
+                  "pm.test(\"Commission ID is valid\", function () {\r",
+                  "    pm.expect(response.commission_id).to.be.a(\"number\");\r",
+                  "});\r",
+                  "pm.test(\"Commission details are correct\", function () {\r",
+                  "    pm.expect(response.commission.from_role).to.eql(\"Customer\");\r",
+                  "    pm.expect(response.commission.to_role).to.eql(\"Merchant\");  \r",
+                  "    pm.expect(response.commission.type).to.eql(\"FIXED\");\r",
+                  "    pm.expect(response.commission.value).to.eql(5);\r",
+                  "    pm.expect(response.commission.id).to.be.a(\"number\");\r",
+                  "    pm.expect(response.commission.updated_at).to.be.a(\"string\");\r",
+                  "    pm.expect(response.commission.created_at).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
